@@ -48,3 +48,91 @@ Course parseCSVLine(const string& line) {
     return course;
 }
 
+int main() {
+    // Read input from CSV file
+    //Input file contains this kind of lines
+    //Ex. IT112,3,BG,0,1A,B tech,B Tech (ICT and CS)
+    ifstream inputFile("C:\\Users\\vasub\\OneDrive\\Desktop\\subjects.csv"); 
+    if (!inputFile.is_open()) {
+        cout << "\nError: Unable to open input file\n" << endl;
+        return 0;
+    }
+
+    // Map to hold courses grouped by classroom
+    map<string, vector<Course>> classroomCourses;
+
+    // Read each line from the file and parse course information
+    string line;
+    while (getline(inputFile, line)) {
+        Course course = parseCSVLine(line);
+        // Group courses by classroom
+        string classroomKey = course.program + "-" + course.branch + "-" + course.semester;
+        classroomCourses[classroomKey].push_back(course);
+    }
+
+    // Determine the maximum number of core and elective courses across all classrooms
+    int maxCore = 0, maxElective = 0;
+    for (const auto& classroomPair : classroomCourses) {
+        const vector<Course>& courses = classroomPair.second;
+
+        int coreCount = count_if(courses.begin(), courses.end(), [](const Course& course) {
+            return !course.isElective;
+        });
+
+        int electiveCount = count_if(courses.begin(), courses.end(), [](const Course& course) {
+            return course.isElective;
+        });
+
+        maxCore = max(maxCore, coreCount);
+        maxElective = max(maxElective, electiveCount);
+    }
+
+    // Total number slots
+    int totalSlots = maxCore + maxElective;
+
+    // Print the table header means name of each column
+    cout << setw(30) << left << "Classroom";
+    for (int i = 1; i <= totalSlots; ++i) {
+        cout << setw(8) << left << "Slot " + to_string(i);
+    }
+    cout << endl;
+
+    // Iterate over each classroom and print the course subjectcodes in slots
+    for (const auto& classroomPair : classroomCourses) {
+        const string& classroomKey = classroomPair.first;
+        const vector<Course>& courses = classroomPair.second;
+
+        cout << setw(30) << left << classroomKey;
+
+        // Print core courses
+        int coreCount = count_if(courses.begin(), courses.end(), [](const Course& course) {
+            return !course.isElective;
+        });
+        for (int i = 0; i < coreCount; ++i) {
+            cout << setw(8) << left << courses[i].subjectcode;
+        }
+
+        // Print blank slots for classrooms with no core courses
+        for (int i = coreCount; i < maxCore; ++i) {
+            cout << setw(8) << left << "";
+        }
+
+        // Print elective courses
+        int electiveCount = count_if(courses.begin(), courses.end(), [](const Course& course) {
+            return course.isElective;
+        });
+        for (int i = 0; i < electiveCount; ++i) {
+            cout << setw(8) << left << courses[coreCount + i].subjectcode;
+        }
+
+        // Print blank slots for remaining elective slots
+        for (int i = electiveCount; i < maxElective; ++i) {
+            cout << setw(8) << left << "";
+        }
+
+        cout << endl;
+    }
+
+    inputFile.close();
+    return 0;
+}
