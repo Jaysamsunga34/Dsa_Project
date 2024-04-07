@@ -1,1 +1,50 @@
+#include <bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <iomanip>
+
+using namespace std;
+
+struct Course {
+    string subjectcode; //Example IT205, IT206, SC217, etc
+    int totalLectures;  //lecture credit of that perticular subject(no of lecture in every week). 
+                        //Example IT205-3 credit
+    string faculty;     //Faculty sort name. Example IT205 prof. name Arpit Rana sort name as AR.
+    bool isElective;    //If subject is core then this value is 0 & if course is elective then this value is 1.
+    string semester;    //***1A,1B,3,..*** Input subject is from which semester. 
+                        //**ex. in sem 1 in any course have different section then write 1A for section A and 1B for section B.
+    string program;     //Example B tech, M tech..
+    string branch;      //Example B tech(ICT), B tech(ICT and CS)..
+};
+
+//Function to converting CSV text input into arrays or objects
+// Function to parse CSV line and return Course object
+Course parseCSVLine(const string& line) {
+    stringstream ss(line); //stringstream is class and object name is ss, that treat a string like line
+    string token;          //token refers to a single part or segment of the input string line, 
+                           //which is separated by comma
+                           //ex. IT112,3,BG,0,1A,B tech,B Tech (ICT and CS) this is line and IT112 is token, 3 is token
+    vector<string> tokens;
+
+    while (getline(ss, token, ',')) {
+        tokens.push_back(token);
+    }
+
+    Course course;       // make an object name 'course' in Course named class
+    if (tokens.size() >= 7) {
+        course.subjectcode = tokens[0];
+        course.totalLectures = stoi(tokens[1]);
+        course.faculty = tokens[2];
+        course.isElective = (tokens[3] == "1");
+        course.semester = tokens[4];
+        course.program = tokens[5];
+        course.branch = tokens[6];
+    }
+
+    return course;
+}
 
