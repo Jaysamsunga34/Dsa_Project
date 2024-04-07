@@ -195,6 +195,7 @@ bool canAssign(Subject subject,Room room,int day,int hour,unordered_map<string,i
     }
 
     // Checking if the room capacity is sufficient for the subject
+    
     return true; // Here we assume that all the rooms have sufficient capacity to accomodate any subject
 }
 
