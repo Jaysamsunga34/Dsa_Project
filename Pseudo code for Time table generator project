@@ -16,3 +16,28 @@ Define a function named parseCSVLine that takes a string line as input and retur
     Create a Course object and populate its attributes with values from tokens
     Return the Course object
 
+Define the main function:
+    Open a CSV file for input
+    If the file fails to open, print an error message and exit the program
+    Initialize an empty map named classroomCourses to hold courses grouped by classroom
+
+    Read each line from the file:
+        Parse the line using the parseCSVLine function
+        Generate a key for the classroom based on program, branch, and semester
+        Add the course to the corresponding vector in classroomCourses using the generated key
+
+    Initialize variables maxCore and maxElective to 0
+
+    Iterate over each classroom in classroomCourses:
+        Initialize coreCount and electiveCount to 0
+        Count the number of core and elective courses in the classroom
+        Update maxCore and maxElective if necessary
+
+    Calculate the total number of slots as the sum of maxCore and maxElective
+
+    Print the table header with the classroom names and slot numbers
+
+    Iterate over each classroom in classroomCourses:
+        Print the classroom name
+        Print the subjectcodes of core courses followed by blank slots
+        Print the subjectcodes of elective courses followed by blank slots
