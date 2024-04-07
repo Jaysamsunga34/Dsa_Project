@@ -35,6 +35,11 @@ Define the main function:
 
     Calculate the total number of slots as the sum of maxCore and maxElective
 
+    Iterate over each classroom in classroomCourses:
+        Print the classroom name
+        Print the subjectcodes of core courses followed by blank slots
+        Print the subjectcodes of elective courses followed by blank slots
+
     Print the table header with the classroom names and slot numbers
 
     
