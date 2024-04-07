@@ -52,7 +52,7 @@ int main() {
     // Read input from CSV file
     //Input file contains this kind of lines
     //Ex. IT112,3,BG,0,1A,B tech,B Tech (ICT and CS)
-    ifstream inputFile("C:\\Users\\vasub\\OneDrive\\Desktop\\subjects.csv"); 
+    ifstream inputFile("subject.csv"); 
     if (!inputFile.is_open()) {
         cout << "\nError: Unable to open input file\n" << endl;
         return 0;
