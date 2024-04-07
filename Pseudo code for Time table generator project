@@ -1,0 +1,18 @@
+include reqired header file
+
+Define a structure named Course with the following attributes:
+    subjectcode   : string
+    totalLectures : integer
+    faculty       : string
+    isElective    : boolean
+    semester      : string
+    program       : string
+    branch        : string
+
+Define a function named parseCSVLine that takes a string line as input and returns a Course object:
+    Initialize a stringstream with the input line
+    Initialize an empty vector of strings named tokens
+    Split the line by comma and store each part in the tokens vector
+    Create a Course object and populate its attributes with values from tokens
+    Return the Course object
+
