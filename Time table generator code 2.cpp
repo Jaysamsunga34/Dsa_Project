@@ -49,9 +49,73 @@ public:
         timetable.resize(DAYS_IN_WEEK,vector<vector<TimeSlot>>(HOURS_IN_DAY));
     }
     string line,roomName;;
-    
+    void readroom(string filename){
+        ifstream file(filename);
+        if(!file.is_open()){
+            cout<<"Failed to open file: "<<filename<<endl;
+            return;
+        }
 
-   
+        while(getline(file, line)){
+            if (line.empty()){
+                continue;//Skipping over empty lines
+            }
+
+            stringstream ss(line);
+            if(getline(ss, roomName, ',')){
+                rooms.push_back({roomName});//We are taking the room names from our input file
+            }
+        }
+        file.close();
+    }
+
+    void readsubjects(string filename){
+    ifstream file(filename);
+    if (!file.is_open()){
+        cout<<"Failed to open file: "<<filename<<endl;
+        return;
+    }
+
+ string line,code,name,lecturesStr,tutorialsStr,practicalsStr,creditsStr,professor,branchStr;
+        int lectures,tutorials,practicals,credits,branch,currentBranch=0; // Tracking the current branch being read
+    while(getline(file, line)){
+        if(line.substr(0, 4)=="Year"){ // Skipping the lines starting with "Year"
+            continue;
+        }
+
+        stringstream ss(line);
+       
+        if(getline(ss,code,',')&&
+            getline(ss,name,',')&&
+            getline(ss,lecturesStr,',')&&
+            getline(ss,tutorialsStr,',')&&
+            getline(ss,practicalsStr,',')&&
+            getline(ss,creditsStr,',')&&
+            getline(ss,professor,',')){
+
+            lectures=stoi(lecturesStr);
+            tutorials=stoi(tutorialsStr);
+            practicals=stoi(practicalsStr);
+            credits=stoi(creditsStr);
+
+            //  Taking the branch information which is given after the professors name
+            if(professor.back()==','){
+                professor.pop_back(); // Removing  trailing comma if present
+            }
+
+            if(getline(ss,branchStr,',')){
+                branch=stoi(branchStr);
+            } 
+
+            subjects.push_back({code,name,lectures,tutorials,practicals,credits,professor,branch});
+        } 
+        else if(!code.empty()){
+            // If there is no branch information we default to the previous branch
+            subjects.push_back({code,name,lectures,tutorials,practicals,credits,professor,currentBranch});
+        } 
+    }
+    file.close();
+}
 
 void generateTimetable(){
     random_device rd;
@@ -134,8 +198,23 @@ bool canAssign(Subject subject,Room room,int day,int hour,unordered_map<string,i
     return true; // Here we assume that all the rooms have sufficient capacity to accomodate any subject
 }
 
+void printTimetable(){
+        cout<<setw(8)<<"Day"<<setw(23)<<"Start Time"<<setw(17)<<"End Time"<<setw(21)<<"Subject Code"<<setw(20)<<"Professor"<<setw(17)<<"Room"<<endl;
+        cout<<setfill('-')<<setw(110)<<"-"<<setfill(' ')<<endl;
+        
+         string daysOfWeek[DAYS_IN_WEEK] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
 
+        for(int day=0;day<DAYS_IN_WEEK;++day){
+            for (int hour=0;hour<HOURS_IN_DAY;++hour){
+                for(TimeSlot slot:timetable[day][hour]){
+                    cout<<setw(10)<<slot.day<<setw(15)<<slot.starthour<<":00"<<setw(15)<<slot.endhour<<":00"
+                        <<setw(20)<<slot.subject.code<<setw(20)<<slot.subject.professor<<setw(20)<<slot.room.name<<endl;
+                }
+            }
+        }
+    }
 };
+
 
 int main(){
     TimetableGenerator generator;
@@ -143,5 +222,6 @@ int main(){
     generator.readsubjects("subjects.csv");//Reading input from the files
     generator.generateTimetable();
     generator.printTimetable();
+    
     return 0;
 } 
